@@ -1,8 +1,10 @@
 {
   "name": "@katalis/shell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Barra de navegación compartida de la suite Katalis",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "files": ["dist", "styles.css", "assets", "README.md", "capturas"],
   "exports": {

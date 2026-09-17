@@ -58,3 +58,6 @@ bun test
 
 Se publica `dist` compilado para que las dependencias git no necesiten scripts de instalación.
 No muevas una etiqueta publicada. Crea una nueva versión para cualquier cambio posterior.
+
+La versión 0.1.1 añade `main` y `types` para TypeScript con resolución `node` en Postiz.
+Conserva los exports modernos y el mismo código y CSS de 0.1.0.

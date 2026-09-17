@@ -1,5 +1,5 @@
 "use client";
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { KATALIS_BUSINESSES } from "./sections.js";
 const STORAGE_KEY = "katalis.business";
 const CHANGE_EVENT = "katalis-business-change";
@@ -45,5 +45,15 @@ function selectBusiness(value) {
 }
 export function useKatalisBusiness() {
     const value = useSyncExternalStore(subscribe, readSelection, () => DEFAULT_BUSINESS);
+    useEffect(() => {
+        const incoming = new URLSearchParams(window.location.search).get("negocio");
+        if (!isBusiness(incoming))
+            return;
+        selected = incoming;
+        try {
+            window.localStorage.setItem(STORAGE_KEY, incoming);
+        }
+        catch { }
+    }, [value]);
     return { value, options: KATALIS_BUSINESSES, onChange: selectBusiness };
 }

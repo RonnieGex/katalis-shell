@@ -63,3 +63,4 @@ No muevas una etiqueta publicada. Crea una nueva versión para cualquier cambio 
 La versión 0.1.1 añade `main` y `types` para TypeScript con resolución `node` en Postiz.
 Conserva los exports modernos y el mismo código y CSS de 0.1.0.
 La versión 0.1.2 declara los tokens como dependencia par para evitar duplicados de Git en Bun 1.3.12.
+La versión 0.1.3 conserva el negocio recibido por enlace al continuar por las rutas internas de otra aplicación.

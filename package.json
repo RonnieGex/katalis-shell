@@ -1,6 +1,6 @@
 {
   "name": "@katalis/shell",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Barra de navegación compartida de la suite Katalis",
   "type": "module",
   "main": "./dist/index.js",

@@ -113,7 +113,7 @@ export function useKatalisBusiness(onBusinessChange, catalog) {
         onBusinessChange?.(id);
     }, [onBusinessChange, resolved]);
     const options = useMemo(() => [{ id: ALL_BUSINESSES, label: "Todos los negocios" }, ...resolved.options], [resolved]);
-    return { value, options, onChange, ready: ready && resolved.options.length > 0, state };
+    return { value, options, onChange, ready: ready && resolved.options.length > 0, state, catalog: resolved };
 }
 const BusinessContext = createContext(null);
 export function KatalisBusinessProvider({ catalog, onBusinessChange, children, }) {

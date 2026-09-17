@@ -40,6 +40,7 @@ export type ShellBusiness = {
   onChange: (id: string) => void;
   ready: boolean;
   state: BusinessSelectionState;
+  catalog: BusinessCatalog;
 };
 
 export type UseKatalisBusiness = ShellBusiness;
@@ -144,7 +145,7 @@ export function useKatalisBusiness(
     [resolved],
   );
 
-  return { value, options, onChange, ready: ready && resolved.options.length > 0, state };
+  return { value, options, onChange, ready: ready && resolved.options.length > 0, state, catalog: resolved };
 }
 
 const BusinessContext = createContext<UseKatalisBusiness | null>(null);

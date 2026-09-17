@@ -11,6 +11,7 @@ export type ShellBusiness = {
     onChange: (id: string) => void;
     ready: boolean;
     state: BusinessSelectionState;
+    catalog: BusinessCatalog;
 };
 export type UseKatalisBusiness = ShellBusiness;
 export declare function rememberBusinessCatalog(catalog: BusinessCatalog | null): void;

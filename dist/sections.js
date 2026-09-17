@@ -21,8 +21,19 @@ export function createSections(links, businessId) {
     });
 }
 export const KATALIS_BUSINESSES = [
+    { id: "all", label: "Todos los negocios" },
     { id: "orbita", label: "Órbita" },
     { id: "rock-and-jewel", label: "Rock & Jewel" },
     { id: "dental", label: "Dental" },
     { id: "katalis-lab", label: "Katalis Lab" },
 ];
+export function openReplyContactsHref(crmWorkspaceUrl, businessId) {
+    const url = new URL(crmWorkspaceUrl);
+    if (!["https:", "http:"].includes(url.protocol))
+        throw new Error("El CRM debe usar HTTP o HTTPS.");
+    url.pathname = `${url.pathname.replace(/\/$/, "")}/contacts`;
+    url.searchParams.set("source", "OPENREPLY");
+    if (businessId)
+        url.searchParams.set("negocio", businessId);
+    return url.href;
+}

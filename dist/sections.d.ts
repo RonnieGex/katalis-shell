@@ -15,6 +15,9 @@ export type KatalisSection = {
 };
 export declare function createSections(links: KatalisLinks, businessId?: string): KatalisSection[];
 export declare const KATALIS_BUSINESSES: readonly [{
+    readonly id: "all";
+    readonly label: "Todos los negocios";
+}, {
     readonly id: "orbita";
     readonly label: "Órbita";
 }, {
@@ -28,3 +31,4 @@ export declare const KATALIS_BUSINESSES: readonly [{
     readonly label: "Katalis Lab";
 }];
 export type BusinessId = (typeof KATALIS_BUSINESSES)[number]["id"];
+export declare function openReplyContactsHref(crmWorkspaceUrl: string, businessId?: string): string;

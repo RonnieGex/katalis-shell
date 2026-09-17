@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { createSections } from '../src/sections';
+import { createSections, openReplyContactsHref } from '../src/sections';
 
 const links = {
   home: 'http://localhost:3000',
@@ -20,5 +20,9 @@ describe('Navegación entre aplicaciones', () => {
   test('rechaza protocolos ejecutables y rutas relativas', () => {
     expect(() => createSections({...links, crm: 'javascript:alert(1)'})).toThrow();
     expect(() => createSections({...links, crm: '/crm'})).toThrow();
+  });
+  test('enlaza al filtro real de OpenReply dentro del espacio CRM', () => {
+    expect(openReplyContactsHref('https://crm.katalis.dev/katalis', 'orbita')).toBe('https://crm.katalis.dev/katalis/contacts?source=OPENREPLY&negocio=orbita');
+    expect(() => openReplyContactsHref('javascript:alert(1)')).toThrow();
   });
 });

@@ -20,7 +20,9 @@ export type KatalisShellProps = {
   sections: readonly KatalisSection[];
   current: SectionId;
   business: ShellBusiness;
-  user: ShellUser;
+  user?: ShellUser | null;
+  signInHref?: string;
+  contactsHref?: string;
   contentId?: string;
 };
 
@@ -53,15 +55,15 @@ function SectionLinks({ sections, current }: Pick<KatalisShellProps, "sections" 
   ));
 }
 
-export function KatalisShell({ sections, current, business, user, contentId = "katalis-content" }: KatalisShellProps) {
+export function KatalisShell({ sections, current, business, user, signInHref, contactsHref, contentId = "katalis-content" }: KatalisShellProps) {
   const selectId = useId();
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
-  const initials = user.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toLocaleUpperCase("es-MX") || "K";
+  const initials = user?.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toLocaleUpperCase("es-MX") || "K";
   async function signOut() {
     setSigningOut(true);
     setError("");
-    try { await user.onSignOut(); }
+    try { await user?.onSignOut(); }
     catch { setError("No se pudo cerrar la sesión. Inténtalo de nuevo."); }
     finally { setSigningOut(false); }
   }
@@ -78,15 +80,16 @@ export function KatalisShell({ sections, current, business, user, contentId = "k
       </Disclosure>
       <div className="katalis-shell__account">
         <label className="katalis-shell__sr" htmlFor={selectId}>Negocio</label>
-        <select id={selectId} className="katalis-shell__business" value={business.value} onChange={(event) => business.onChange(event.target.value)} title="Contexto de navegación; los registros no se filtran">
+        <select id={selectId} className="katalis-shell__business" value={business.value} onChange={(event) => business.onChange(event.target.value)} title="Negocio activo en la suite">
           {business.options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
         </select>
-        <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>
+        {contactsHref && <a className="katalis-shell__shortcut" href={contactsHref} aria-label="Contactos de OpenReply" title="Contactos de OpenReply"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3" /></svg><span className="katalis-shell__shortcut-label">Contactos de OpenReply</span></a>}
+        {user ? <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>
           <p className="katalis-shell__name">{user.name}</p>
           <p className="katalis-shell__email">{user.email}</p>
           <button className="katalis-shell__logout" type="button" disabled={signingOut} onClick={signOut}>{signingOut ? "Cerrando sesión…" : "Cerrar sesión"}</button>
           <p className="katalis-shell__error" role="status">{error}</p>
-        </Disclosure>
+        </Disclosure> : signInHref ? <a className="katalis-shell__sign-in" href={signInHref}>Entrar</a> : null}
       </div>
     </header>
   );

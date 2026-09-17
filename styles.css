@@ -69,6 +69,9 @@
 .katalis-shell__link[aria-current="page"]::after { content: ""; position: absolute; inset: auto 0 -1px; height: 2px; background: var(--katalis-ink); }
 .katalis-shell__link[aria-disabled="true"] { cursor: not-allowed; }
 .katalis-shell__account { display: flex; align-items: center; gap: 14px; margin-inline-start: auto; }
+.katalis-shell__shortcut { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 32px; min-height: 40px; color: var(--katalis-ink); text-decoration: none; }
+.katalis-shell__shortcut-label { display: none; }
+.katalis-shell__sign-in { padding: 8px 12px; border: 1px solid var(--katalis-hairline); color: var(--katalis-ink); text-decoration: none; font-weight: var(--katalis-button-weight); }
 
 .katalis-shell__business {
   appearance: auto;
@@ -124,7 +127,17 @@
   .katalis-shell__wordmark { font-size: 20px; }
 }
 
-@media (max-width: 960px) {
+@media (min-width: 900px) and (max-width: 1100px) {
+  .katalis-shell { gap: 10px; }
+  .katalis-shell__nav { gap: 10px; }
+  .katalis-shell__account { gap: 6px; }
+  .katalis-shell__business { max-width: 128px; padding-inline: 6px; font-size: 13px; }
+  .katalis-shell__wordmark { font-size: 18px; }
+}
+
+@media (min-width: 1600px) { .katalis-shell__shortcut-label { display: inline; } }
+
+@media (max-width: 899.98px) {
   .katalis-shell__nav { display: none; }
   .katalis-shell__disclosure--sections { display: block; }
   .katalis-shell__disclosure--sections .katalis-shell__popover { inset-inline-start: 0; inset-inline-end: auto; }

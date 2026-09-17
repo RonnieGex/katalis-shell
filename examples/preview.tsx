@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { KatalisShell, createSections, useKatalisBusiness } from '../src/index.js';
+import { KatalisShell, createSections, openReplyContactsHref, useKatalisBusiness } from '../src/index.js';
 import '../styles.css';
 
 const links = {
@@ -14,7 +14,7 @@ const links = {
 function Preview() {
   const business = useKatalisBusiness();
   return <>
-    <KatalisShell sections={createSections(links, business.value)} current="crm" business={business} user={{ name: 'Usuario de ejemplo', email: 'demo@example.com', onSignOut() {} }} />
+    <KatalisShell sections={createSections(links, business.value)} current="crm" business={business} contactsHref={openReplyContactsHref('http://localhost:3000/crm', business.value)} user={{ name: 'Usuario de ejemplo', email: 'demo@example.com', onSignOut() {} }} />
     <main id="katalis-content" tabIndex={-1}><h1>Una suite, todas tus secciones.</h1><p>Vista de demostración del paquete @katalis/shell.</p></main>
   </>;
 }

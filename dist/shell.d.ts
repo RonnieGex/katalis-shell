@@ -17,7 +17,9 @@ export type KatalisShellProps = {
     sections: readonly KatalisSection[];
     current: SectionId;
     business: ShellBusiness;
-    user: ShellUser;
+    user?: ShellUser | null;
+    signInHref?: string;
+    contactsHref?: string;
     contentId?: string;
 };
-export declare function KatalisShell({ sections, current, business, user, contentId }: KatalisShellProps): import("react").JSX.Element;
+export declare function KatalisShell({ sections, current, business, user, signInHref, contactsHref, contentId }: KatalisShellProps): import("react").JSX.Element;

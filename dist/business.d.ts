@@ -1,7 +1,11 @@
-declare function selectBusiness(value: string): void;
-export declare function useKatalisBusiness(): {
-    value: "orbita" | "rock-and-jewel" | "dental" | "katalis-lab";
+import { type BusinessId } from "./sections.js";
+export declare function useKatalisBusiness(onBusinessChange?: (id: BusinessId) => void): {
+    value: "all" | "orbita" | "rock-and-jewel" | "dental" | "katalis-lab";
+    ready: boolean;
     options: readonly [{
+        readonly id: "all";
+        readonly label: "Todos los negocios";
+    }, {
         readonly id: "orbita";
         readonly label: "Órbita";
     }, {
@@ -14,6 +18,5 @@ export declare function useKatalisBusiness(): {
         readonly id: "katalis-lab";
         readonly label: "Katalis Lab";
     }];
-    onChange: typeof selectBusiness;
+    onChange: (id: string) => void;
 };
-export {};

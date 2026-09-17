@@ -1,12 +1,6 @@
 import type { KatalisSection, SectionId } from "./sections.js";
-export type ShellBusiness = {
-    value: string;
-    options: readonly {
-        id: string;
-        label: string;
-    }[];
-    onChange: (id: string) => void;
-};
+import type { ShellBusiness } from "./business.js";
+export type { ShellBusiness };
 export type ShellUser = {
     name: string;
     email: string;

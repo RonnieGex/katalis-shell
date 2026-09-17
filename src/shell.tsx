@@ -2,13 +2,11 @@
 
 import { useId, useState, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { KatalisSection, SectionId } from "./sections.js";
+import { ALL_BUSINESSES, LEGACY_ORBITA } from "./sections.js";
+import type { ShellBusiness } from "./business.js";
 import { safeDestination, signOutOfSuite, suiteSignOutDestination } from "./sign-out.js";
 
-export type ShellBusiness = {
-  value: string;
-  options: readonly { id: string; label: string }[];
-  onChange: (id: string) => void;
-};
+export type { ShellBusiness };
 
 export type ShellUser = {
   name: string;
@@ -65,6 +63,20 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
   const homeHref = sections.find((section) => section.id === "home")?.href;
   const destination = safeDestination(signOutDestination)?.href ?? suiteSignOutDestination(sections) ?? safeDestination(homeHref)?.href ?? "/";
   const initials = user?.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toLocaleUpperCase("es-MX") || "K";
+  const selectValue = business.state === "legacy-union" ? LEGACY_ORBITA : business.value;
+  const groups = business.options.reduce<{ id: string; label: string; options: typeof business.options }[]>(
+    (accumulator, option) => {
+      const id = option.groupId ?? "";
+      const label = option.groupLabel ?? "";
+      const existing = accumulator.find((group) => group.id === id);
+      if (existing) {
+        existing.options = [...existing.options, option];
+        return accumulator;
+      }
+      return [...accumulator, { id, label, options: [option] }];
+    },
+    [],
+  );
   async function signOut() {
     setSigningOut(true);
     setError("");
@@ -89,8 +101,17 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
       </Disclosure>
       <div className="katalis-shell__account">
         <label className="katalis-shell__sr" htmlFor={selectId}>Negocio</label>
-        <select id={selectId} className="katalis-shell__business" value={business.value} onChange={(event) => business.onChange(event.target.value)} title="Negocio activo en la suite">
-          {business.options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+        <select id={selectId} className="katalis-shell__business" value={selectValue} onChange={(event) => business.onChange(event.target.value)} title="Negocio activo en la suite" disabled={!business.ready}>
+          {business.state === "unavailable" ? <option value={ALL_BUSINESSES}>Catálogo de negocios no disponible</option> : null}
+          {business.state === "invalid" ? <option value={ALL_BUSINESSES}>Selección de negocio no disponible</option> : null}
+          {business.state === "legacy-union" ? <option value={LEGACY_ORBITA}>Órbita · selección anterior</option> : null}
+          {groups.map((group) => group.options.length === 1 && !group.label
+            ? group.options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)
+            : (
+              <optgroup key={group.id} label={group.label}>
+                {group.options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+              </optgroup>
+            ))}
         </select>
         {contactsHref && <a className="katalis-shell__shortcut" href={contactsHref} aria-label="Contactos de OpenReply" title="Contactos de OpenReply"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3" /></svg><span className="katalis-shell__shortcut-label">Contactos de OpenReply</span></a>}
         {user ? <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>

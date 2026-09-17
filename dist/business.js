@@ -1,20 +1,79 @@
 "use client";
-import { useCallback, useEffect, useSyncExternalStore } from "react";
-import { KATALIS_BUSINESSES } from "./sections.js";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore, } from "react";
+import { ALL_BUSINESSES, isSelectableBusinessId, KATALIS_BUSINESSES, LEGACY_ORBITA, selectionState, } from "./sections.js";
 const STORAGE_KEY = "katalis.business";
+const CATALOG_KEY = "katalis.businesses";
 const CHANGE_EVENT = "katalis-business-change";
-const DEFAULT_BUSINESS = "all";
+const DEFAULT_BUSINESS = ALL_BUSINESSES;
 let selected = DEFAULT_BUSINESS;
-function isBusiness(value) {
-    return KATALIS_BUSINESSES.some((business) => business.id === value);
+let cachedCatalog = null;
+const FALLBACK_CATALOG = {
+    options: KATALIS_BUSINESSES.filter((business) => business.id !== ALL_BUSINESSES).map((business) => ({
+        id: business.id,
+        label: business.label,
+    })),
+};
+function catalogFrom(value) {
+    if (!value || typeof value !== "object")
+        return null;
+    const candidate = value;
+    if (!Array.isArray(candidate.options))
+        return null;
+    const options = candidate.options
+        .map((entry) => {
+        if (!entry || typeof entry !== "object")
+            return null;
+        const option = entry;
+        if (typeof option.id !== "string" || option.id === "" || typeof option.label !== "string")
+            return null;
+        return {
+            id: option.id,
+            label: option.label,
+            ...(typeof option.groupId === "string" ? { groupId: option.groupId } : {}),
+            ...(typeof option.groupLabel === "string" ? { groupLabel: option.groupLabel } : {}),
+        };
+    })
+        .filter((option) => option !== null);
+    if (options.length === 0)
+        return null;
+    return { options };
+}
+function readStoredCatalog() {
+    if (cachedCatalog)
+        return cachedCatalog;
+    if (typeof window === "undefined")
+        return null;
+    try {
+        const raw = window.localStorage.getItem(CATALOG_KEY);
+        if (!raw)
+            return null;
+        cachedCatalog = catalogFrom(JSON.parse(raw));
+        return cachedCatalog;
+    }
+    catch {
+        return null;
+    }
+}
+export function rememberBusinessCatalog(catalog) {
+    cachedCatalog = catalog;
+    if (typeof window === "undefined")
+        return;
+    try {
+        if (catalog)
+            window.localStorage.setItem(CATALOG_KEY, JSON.stringify(catalog));
+        else
+            window.localStorage.removeItem(CATALOG_KEY);
+    }
+    catch { }
 }
 function readSelection() {
     const query = new URLSearchParams(window.location.search).get("negocio");
-    if (isBusiness(query))
+    if (query)
         return query;
     try {
         const stored = window.localStorage.getItem(STORAGE_KEY);
-        if (isBusiness(stored))
+        if (stored)
             return stored;
     }
     catch { }
@@ -30,10 +89,7 @@ function subscribe(listener) {
         window.removeEventListener("popstate", listener);
     };
 }
-function selectBusiness(value) {
-    if (!isBusiness(value))
-        return;
-    selected = value;
+function persist(value) {
     try {
         window.localStorage.setItem(STORAGE_KEY, value);
     }
@@ -43,24 +99,33 @@ function selectBusiness(value) {
     window.history.replaceState(window.history.state, "", url);
     window.dispatchEvent(new Event(CHANGE_EVENT));
 }
-export function useKatalisBusiness(onBusinessChange) {
-    const value = useSyncExternalStore(subscribe, readSelection, () => DEFAULT_BUSINESS);
+export function useKatalisBusiness(onBusinessChange, catalog) {
+    const resolved = catalog ?? readStoredCatalog() ?? FALLBACK_CATALOG;
+    const raw = useSyncExternalStore(subscribe, readSelection, () => DEFAULT_BUSINESS);
     const ready = useSyncExternalStore(subscribe, () => true, () => false);
+    const state = ready ? selectionState(raw, resolved) : "all";
+    const value = ready && (state === "business" || state === "legacy-union" || state === "all") ? raw : DEFAULT_BUSINESS;
     const onChange = useCallback((id) => {
-        if (!isBusiness(id))
+        if (id !== ALL_BUSINESSES && !isSelectableBusinessId(id, resolved) && id !== LEGACY_ORBITA)
             return;
-        selectBusiness(id);
+        selected = id;
+        persist(id);
         onBusinessChange?.(id);
-    }, [onBusinessChange]);
+    }, [onBusinessChange, resolved]);
+    const options = useMemo(() => [{ id: ALL_BUSINESSES, label: "Todos los negocios" }, ...resolved.options], [resolved]);
+    return { value, options, onChange, ready: ready && resolved.options.length > 0, state };
+}
+const BusinessContext = createContext(null);
+export function KatalisBusinessProvider({ catalog, onBusinessChange, children, }) {
+    const business = useKatalisBusiness(onBusinessChange, catalog);
     useEffect(() => {
-        const incoming = new URLSearchParams(window.location.search).get("negocio");
-        if (!isBusiness(incoming))
-            return;
-        selected = incoming;
-        try {
-            window.localStorage.setItem(STORAGE_KEY, incoming);
-        }
-        catch { }
-    }, [value]);
-    return { value, ready, options: KATALIS_BUSINESSES, onChange };
+        rememberBusinessCatalog(catalog ?? null);
+    }, [catalog]);
+    return _jsx(BusinessContext.Provider, { value: business, children: children });
+}
+export function useKatalisBusinessContext() {
+    const business = useContext(BusinessContext);
+    if (!business)
+        throw new Error("Falta KatalisBusinessProvider alrededor de este componente.");
+    return business;
 }

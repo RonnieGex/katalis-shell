@@ -2,6 +2,7 @@
 
 import { useId, useState, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { KatalisSection, SectionId } from "./sections.js";
+import { signOutOfSuite } from "./sign-out.js";
 
 export type ShellBusiness = {
   value: string;
@@ -13,7 +14,7 @@ export type ShellUser = {
   name: string;
   email: string;
   avatarUrl?: string | null;
-  onSignOut: () => void | Promise<void>;
+  onSignOut?: () => void | Promise<void>;
 };
 
 export type KatalisShellProps = {
@@ -22,6 +23,7 @@ export type KatalisShellProps = {
   business: ShellBusiness;
   user?: ShellUser | null;
   signInHref?: string;
+  signOutUrl?: string;
   contactsHref?: string;
   contentId?: string;
 };
@@ -55,7 +57,7 @@ function SectionLinks({ sections, current }: Pick<KatalisShellProps, "sections" 
   ));
 }
 
-export function KatalisShell({ sections, current, business, user, signInHref, contactsHref, contentId = "katalis-content" }: KatalisShellProps) {
+export function KatalisShell({ sections, current, business, user, signInHref, signOutUrl, contactsHref, contentId = "katalis-content" }: KatalisShellProps) {
   const selectId = useId();
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
@@ -63,7 +65,11 @@ export function KatalisShell({ sections, current, business, user, signInHref, co
   async function signOut() {
     setSigningOut(true);
     setError("");
-    try { await user?.onSignOut(); }
+    try {
+      if (signOutUrl) await signOutOfSuite(signOutUrl);
+      else if (user?.onSignOut) await user.onSignOut();
+      else throw new Error("Falta configurar la salida.");
+    }
     catch { setError("No se pudo cerrar la sesión. Inténtalo de nuevo."); }
     finally { setSigningOut(false); }
   }
@@ -87,7 +93,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, co
         {user ? <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>
           <p className="katalis-shell__name">{user.name}</p>
           <p className="katalis-shell__email">{user.email}</p>
-          <button className="katalis-shell__logout" type="button" disabled={signingOut} onClick={signOut}>{signingOut ? "Cerrando sesión…" : "Cerrar sesión"}</button>
+          <button className="katalis-shell__logout" type="button" disabled={signingOut} onClick={signOut}>{signingOut ? "Cerrando sesión…" : "Salir"}</button>
           <p className="katalis-shell__error" role="status">{error}</p>
         </Disclosure> : signInHref ? <a className="katalis-shell__sign-in" href={signInHref}>Entrar</a> : null}
       </div>

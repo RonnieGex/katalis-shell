@@ -72,3 +72,9 @@ La versión 0.1.2 declara los tokens como dependencia par para evitar duplicados
 La versión 0.1.3 conserva el negocio recibido por enlace al continuar por las rutas internas de otra aplicación.
 La versión 0.2.0 añade el umbral de 900 px, Todos los negocios, callback, estado de hidratación, acceso sin sesión y atajo de contactos.
 `openReplyContactsHref` recibe la URL del espacio CRM, por ejemplo `https://crm.katalis.dev/katalis`, y conserva el filtro `source=OPENREPLY`.
+
+## Identidad única (v0.3.0)
+
+Las cuatro apps pasan `signOutUrl="https://api.crm.katalis.dev/api/auth/sign-out"`.
+El menú «Salir» hace POST con cookies y vuelve a `https://katalis.dev/` solo si el CRM confirma la salida. Ante un fallo conserva la página y permite reintentar.
+`user.onSignOut` queda como compatibilidad para desarrollo; no se usa en la suite desplegada.

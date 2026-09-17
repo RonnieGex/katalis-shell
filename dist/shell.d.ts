@@ -20,7 +20,8 @@ export type KatalisShellProps = {
     user?: ShellUser | null;
     signInHref?: string;
     signOutUrl?: string;
+    signOutDestination?: string;
     contactsHref?: string;
     contentId?: string;
 };
-export declare function KatalisShell({ sections, current, business, user, signInHref, signOutUrl, contactsHref, contentId }: KatalisShellProps): import("react").JSX.Element;
+export declare function KatalisShell({ sections, current, business, user, signInHref, signOutUrl, signOutDestination, contactsHref, contentId }: KatalisShellProps): import("react").JSX.Element;

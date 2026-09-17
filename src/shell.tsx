@@ -2,7 +2,7 @@
 
 import { useId, useState, type FocusEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { KatalisSection, SectionId } from "./sections.js";
-import { signOutOfSuite } from "./sign-out.js";
+import { safeDestination, signOutOfSuite, suiteSignOutDestination } from "./sign-out.js";
 
 export type ShellBusiness = {
   value: string;
@@ -24,6 +24,7 @@ export type KatalisShellProps = {
   user?: ShellUser | null;
   signInHref?: string;
   signOutUrl?: string;
+  signOutDestination?: string;
   contactsHref?: string;
   contentId?: string;
 };
@@ -57,16 +58,18 @@ function SectionLinks({ sections, current }: Pick<KatalisShellProps, "sections" 
   ));
 }
 
-export function KatalisShell({ sections, current, business, user, signInHref, signOutUrl, contactsHref, contentId = "katalis-content" }: KatalisShellProps) {
+export function KatalisShell({ sections, current, business, user, signInHref, signOutUrl, signOutDestination, contactsHref, contentId = "katalis-content" }: KatalisShellProps) {
   const selectId = useId();
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
+  const homeHref = sections.find((section) => section.id === "home")?.href;
+  const destination = safeDestination(signOutDestination)?.href ?? suiteSignOutDestination(sections) ?? safeDestination(homeHref)?.href ?? "/";
   const initials = user?.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toLocaleUpperCase("es-MX") || "K";
   async function signOut() {
     setSigningOut(true);
     setError("");
     try {
-      if (signOutUrl) await signOutOfSuite(signOutUrl);
+      if (signOutUrl) await signOutOfSuite(signOutUrl, destination);
       else if (user?.onSignOut) await user.onSignOut();
       else throw new Error("Falta configurar la salida.");
     }
@@ -76,7 +79,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
   return (
     <header className="katalis-shell" aria-label="Suite Katalis">
       <a className="katalis-shell__skip" href={`#${contentId}`}>Saltar al contenido</a>
-      <a className="katalis-shell__brand" href={sections.find((section) => section.id === "home")?.href ?? "/"} aria-label="Katalis, inicio">
+      <a className="katalis-shell__brand" href={homeHref ?? "/"} aria-label="Katalis, inicio">
         <span className="katalis-shell__mark" aria-hidden="true" />
         <span className="katalis-shell__wordmark">Katalis</span>
       </a>

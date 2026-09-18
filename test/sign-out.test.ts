@@ -56,3 +56,5 @@ test("safeDestination classifies absolute and relative destinations", () => {
   expect(safeDestination("//evil.invalid")).toBeNull();
   expect(safeDestination(undefined)).toBeNull();
 });
+
+test.each(["/..//evil.tld", "/%2e%2e//evil.tld", "/%2e%2e/%2fevil.tld", "/\\evil.tld"])("rejects normalized external relative sign-out destinations: %s", value => { expect(safeDestination(value)).toBeNull(); });

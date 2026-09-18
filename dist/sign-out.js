@@ -5,8 +5,21 @@ export function safeDestination(value) {
     const trimmed = value.trim();
     if (trimmed === "")
         return null;
-    if (trimmed.startsWith("/") && !trimmed.startsWith("//"))
-        return { href: trimmed, kind: "relative" };
+    if (trimmed.startsWith("/")) {
+        try {
+            const decoded = decodeURIComponent(trimmed);
+            if (/[\\\x00-\x20]/.test(decoded) || decoded.startsWith("//"))
+                return null;
+            const url = new URL(trimmed, "https://relative.invalid");
+            const href = url.pathname + url.search + url.hash;
+            if (url.origin !== "https://relative.invalid" || decodeURIComponent(href).startsWith("//"))
+                return null;
+            return { href, kind: "relative" };
+        }
+        catch {
+            return null;
+        }
+    }
     try {
         const url = new URL(trimmed);
         if (!HTTP_PROTOCOLS.includes(url.protocol))

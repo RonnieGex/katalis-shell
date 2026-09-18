@@ -3,6 +3,7 @@ import {
   ALL_BUSINESSES,
   LEGACY_ORBITA,
   selectionState,
+  businessSelectionValue,
   type BusinessCatalog,
 } from "../src/sections";
 
@@ -35,4 +36,11 @@ test("un catálogo vacío no se convierte en Todos", () => {
   const empty: BusinessCatalog = { options: [] };
   expect(selectionState(ALL_BUSINESSES, empty)).toBe("unavailable");
   expect(selectionState("b-rock", empty)).toBe("invalid");
+});
+
+test("an unknown or empty-catalog selection never becomes all", () => {
+ expect(businessSelectionValue("deleted-id", catalog)).toBe("deleted-id");
+ expect(businessSelectionValue("deleted-id", { options: [] })).toBe("deleted-id");
+ expect(businessSelectionValue("orbita", catalog)).toBe("orbita");
+ expect(businessSelectionValue("dental", { options: [{ id: "biz-dental", label: "Dental" }] })).toBe("biz-dental");
 });

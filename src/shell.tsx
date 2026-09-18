@@ -103,7 +103,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
         <label className="katalis-shell__sr" htmlFor={selectId}>Negocio</label>
         <select id={selectId} className="katalis-shell__business" value={selectValue} onChange={(event) => business.onChange(event.target.value)} title="Negocio activo en la suite" disabled={!business.ready}>
           {business.state === "unavailable" ? <option value={ALL_BUSINESSES}>Catálogo de negocios no disponible</option> : null}
-          {business.state === "invalid" ? <option value={ALL_BUSINESSES}>Selección de negocio no disponible</option> : null}
+          {business.state === "invalid" ? <option value={business.value}>Selección de negocio no disponible</option> : null}
           {business.state === "legacy-union" ? <option value={LEGACY_ORBITA}>Órbita · selección anterior</option> : null}
           {groups.map((group) => group.options.length === 1 && !group.label
             ? group.options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)

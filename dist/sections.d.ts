@@ -62,3 +62,4 @@ export declare function catalogIds(catalog: BusinessCatalog): string[];
 export declare function isSelectableBusinessId(value: string | null | undefined, catalog: BusinessCatalog): boolean;
 export declare function selectionState(value: string, catalog: BusinessCatalog): BusinessSelectionState;
 export declare function openReplyContactsHref(crmWorkspaceUrl: string, businessId?: string): string;
+export declare function businessSelectionValue(raw: string, catalog: BusinessCatalog): string;

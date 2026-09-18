@@ -91,3 +91,9 @@ export function openReplyContactsHref(crmWorkspaceUrl: string, businessId?: stri
   if (businessId && businessId !== ALL_BUSINESSES) url.searchParams.set("negocio", businessId);
   return url.href;
 }
+
+export function businessSelectionValue(raw: string, catalog: BusinessCatalog): string {
+  const legacy: Record<string, string> = { "rock-and-jewel": "biz-rock-and-jewel", dental: "biz-dental", "katalis-lab": "biz-katalis-lab" };
+  const candidate = legacy[raw];
+  return candidate && catalog.options.some(option => option.id === candidate) ? candidate : raw;
+}

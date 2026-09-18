@@ -62,3 +62,8 @@ export function openReplyContactsHref(crmWorkspaceUrl, businessId) {
         url.searchParams.set("negocio", businessId);
     return url.href;
 }
+export function businessSelectionValue(raw, catalog) {
+    const legacy = { "rock-and-jewel": "biz-rock-and-jewel", dental: "biz-dental", "katalis-lab": "biz-katalis-lab" };
+    const candidate = legacy[raw];
+    return candidate && catalog.options.some(option => option.id === candidate) ? candidate : raw;
+}

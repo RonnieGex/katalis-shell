@@ -15,6 +15,7 @@ import {
   KATALIS_BUSINESSES,
   LEGACY_ORBITA,
   selectionState,
+  businessSelectionValue,
   type BusinessCatalog,
   type BusinessSelectionState,
 } from "./sections.js";
@@ -123,12 +124,12 @@ export function useKatalisBusiness(
   onBusinessChange?: (id: string) => void,
   catalog?: BusinessCatalog | null,
 ): UseKatalisBusiness {
-  const resolved = catalog ?? readStoredCatalog() ?? FALLBACK_CATALOG;
+  const resolved = catalog === undefined ? readStoredCatalog() ?? FALLBACK_CATALOG : catalog ?? { options: [] };
   const raw = useSyncExternalStore(subscribe, readSelection, () => DEFAULT_BUSINESS);
   const ready = useSyncExternalStore(subscribe, () => true, () => false);
 
-  const state = ready ? selectionState(raw, resolved) : "all";
-  const value = ready && (state === "business" || state === "legacy-union" || state === "all") ? raw : DEFAULT_BUSINESS;
+  const state = ready ? selectionState(businessSelectionValue(raw, resolved), resolved) : "all";
+  const value = ready ? businessSelectionValue(raw, resolved) : DEFAULT_BUSINESS;
 
   const onChange = useCallback(
     (id: string) => {

@@ -1,7 +1,7 @@
 "use client";
 import { jsx as _jsx } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore, } from "react";
-import { ALL_BUSINESSES, isSelectableBusinessId, KATALIS_BUSINESSES, LEGACY_ORBITA, selectionState, } from "./sections.js";
+import { ALL_BUSINESSES, isSelectableBusinessId, KATALIS_BUSINESSES, LEGACY_ORBITA, selectionState, businessSelectionValue, } from "./sections.js";
 const STORAGE_KEY = "katalis.business";
 const CATALOG_KEY = "katalis.businesses";
 const CHANGE_EVENT = "katalis-business-change";
@@ -100,11 +100,11 @@ function persist(value) {
     window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 export function useKatalisBusiness(onBusinessChange, catalog) {
-    const resolved = catalog ?? readStoredCatalog() ?? FALLBACK_CATALOG;
+    const resolved = catalog === undefined ? readStoredCatalog() ?? FALLBACK_CATALOG : catalog ?? { options: [] };
     const raw = useSyncExternalStore(subscribe, readSelection, () => DEFAULT_BUSINESS);
     const ready = useSyncExternalStore(subscribe, () => true, () => false);
-    const state = ready ? selectionState(raw, resolved) : "all";
-    const value = ready && (state === "business" || state === "legacy-union" || state === "all") ? raw : DEFAULT_BUSINESS;
+    const state = ready ? selectionState(businessSelectionValue(raw, resolved), resolved) : "all";
+    const value = ready ? businessSelectionValue(raw, resolved) : DEFAULT_BUSINESS;
     const onChange = useCallback((id) => {
         if (id !== ALL_BUSINESSES && !isSelectableBusinessId(id, resolved) && id !== LEGACY_ORBITA)
             return;

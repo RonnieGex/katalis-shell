@@ -16,7 +16,7 @@ function Navigation({ links, user }) {
 
 | Prop | Contrato |
 | --- | --- |
-| `sections` | Lista `{ id, label, href }`. IDs: `home`, `crm`, `social`, `replies`, `ads`, `settings`. |
+| `sections` | Lista `{ id, label, href }`. IDs: `home`, `crm`, `social`, `replies`, `mail`, `ads`, `settings`. |
 | `current` | ID de la sección activa. Usa tinta y subrayado de 2 px. |
 | `business` | `{ value, options: [{ id, label }], onChange }`. Estado controlado por la aplicación. |
 | `user` | `{ name, email, avatarUrl?, onSignOut }`. El callback cierra la sesión en la aplicación anfitriona. |
@@ -24,11 +24,12 @@ function Navigation({ links, user }) {
 | `contactsHref` | Acceso directo «Contactos de OpenReply»; icono con nombre accesible y texto desde 1600 px. |
 | `contentId` | ID del contenido para el enlace accesible. Predeterminado: `katalis-content`. |
 
-`links` es un objeto con los seis IDs y enlaces HTTP/HTTPS absolutos.
+`links` es un objeto con los siete IDs y enlaces HTTP/HTTPS absolutos.
 `createSections` conserva rutas, parámetros y fragmentos; `#` desactiva una sección pendiente, como Ads.
 CRM: `http://localhost:3000` o `https://crm.katalis.dev`.
 Social: `http://localhost:4200` o `https://social.katalis.dev`.
 Respuestas IG: `https://openreply.katalis.dev`.
+Correo: `https://mail.katalis.dev`, pendiente (`#`) hasta que el servicio esté desplegado.
 Configuración usa el enlace absoluto del CRM terminado en `/settings`.
 Inicio apunta a `https://katalis.dev` o al hub local en `http://localhost:4300`.
 
@@ -72,6 +73,7 @@ La versión 0.1.2 declara los tokens como dependencia par para evitar duplicados
 La versión 0.1.3 conserva el negocio recibido por enlace al continuar por las rutas internas de otra aplicación.
 La versión 0.2.0 añade el umbral de 900 px, Todos los negocios, callback, estado de hidratación, acceso sin sesión y atajo de contactos.
 `openReplyContactsHref` recibe la URL del espacio CRM, por ejemplo `https://crm.katalis.dev/katalis`, y conserva el filtro `source=OPENREPLY`.
+La versión 0.5.0 añade la sección **Correo** (`mail`) entre Respuestas IG y Ads. El consumidor decide si está lista: `#` la deja pendiente y la barra la dibuja desactivada con «próximamente», como Ads.
 
 ## Identidad única (v0.3.0)
 

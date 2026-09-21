@@ -3,6 +3,7 @@ export declare const SECTION_LABELS: {
     readonly crm: "CRM";
     readonly social: "Social";
     readonly replies: "Respuestas IG";
+    readonly mail: "Correo";
     readonly ads: "Ads";
     readonly settings: "Configuración";
 };

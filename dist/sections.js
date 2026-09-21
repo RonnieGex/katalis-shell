@@ -3,6 +3,7 @@ export const SECTION_LABELS = {
     crm: "CRM",
     social: "Social",
     replies: "Respuestas IG",
+    mail: "Correo",
     ads: "Ads",
     settings: "Configuración",
 };

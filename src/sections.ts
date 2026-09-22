@@ -1,8 +1,8 @@
 export const SECTION_LABELS = {
   home: "Inicio",
   crm: "CRM",
-  social: "Social",
-  replies: "Respuestas IG",
+  social: "Redes sociales",
+  replies: "Respuestas Instagram",
   mail: "Correo",
   ads: "Ads",
   settings: "Configuración",
@@ -11,6 +11,19 @@ export const SECTION_LABELS = {
 export type SectionId = keyof typeof SECTION_LABELS;
 export type KatalisLinks = Record<SectionId, string>;
 export type KatalisSection = { id: SectionId; label: string; href: string };
+
+export const OPERATIONAL_SECTION_IDS = [
+  "home",
+  "crm",
+  "social",
+  "replies",
+  "mail",
+  "settings",
+] as const satisfies readonly SectionId[];
+
+export type CreateSectionsOptions = {
+  visibleSections?: readonly SectionId[];
+};
 
 export const ALL_BUSINESSES = "all";
 export const NO_BUSINESS = "none";
@@ -43,15 +56,34 @@ export type BusinessCatalog = {
 
 export type BusinessSelectionState = "all" | "business" | "legacy-union" | "invalid" | "unavailable";
 
-export function createSections(links: KatalisLinks, businessId?: string): KatalisSection[] {
-  return (Object.keys(SECTION_LABELS) as SectionId[]).map((id) => {
+/**
+ * Fija el negocio en un destino con URL y URLSearchParams. `set` deja una sola
+ * ocurrencia y conserva los demás parámetros y el fragmento. Una entrada vacía
+ * no sustituye el negocio que el destino ya llevaba; `all` viaja explícito,
+ * porque quien lee consulta el almacenamiento local cuando falta el parámetro.
+ */
+function setBusiness(url: URL, businessId?: string): void {
+  if (!businessId) return;
+  url.searchParams.set("negocio", businessId);
+}
+
+export function createSections(
+  links: KatalisLinks,
+  businessId?: string,
+  options?: CreateSectionsOptions,
+): KatalisSection[] {
+  const canonical = Object.keys(SECTION_LABELS) as SectionId[];
+  const visible = options?.visibleSections
+    ? canonical.filter((id) => options.visibleSections?.includes(id))
+    : canonical;
+  return visible.map((id) => {
     const href = links[id];
     if (href === "#") return { id, label: SECTION_LABELS[id], href };
     const url = new URL(href);
     if (url.protocol !== "https:" && url.protocol !== "http:") {
       throw new Error(`El enlace de ${SECTION_LABELS[id]} debe usar HTTP o HTTPS.`);
     }
-    if (businessId && businessId !== ALL_BUSINESSES) url.searchParams.set("negocio", businessId);
+    setBusiness(url, businessId);
     return { id, label: SECTION_LABELS[id], href: url.href };
   });
 }
@@ -89,7 +121,7 @@ export function openReplyContactsHref(crmWorkspaceUrl: string, businessId?: stri
   if (!["https:", "http:"].includes(url.protocol)) throw new Error("El CRM debe usar HTTP o HTTPS.");
   url.pathname = `${url.pathname.replace(/\/$/, "")}/contacts`;
   url.searchParams.set("source", "OPENREPLY");
-  if (businessId && businessId !== ALL_BUSINESSES) url.searchParams.set("negocio", businessId);
+  setBusiness(url, businessId);
   return url.href;
 }
 

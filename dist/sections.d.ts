@@ -1,8 +1,8 @@
 export declare const SECTION_LABELS: {
     readonly home: "Inicio";
     readonly crm: "CRM";
-    readonly social: "Social";
-    readonly replies: "Respuestas IG";
+    readonly social: "Redes sociales";
+    readonly replies: "Respuestas Instagram";
     readonly mail: "Correo";
     readonly ads: "Ads";
     readonly settings: "Configuración";
@@ -13,6 +13,10 @@ export type KatalisSection = {
     id: SectionId;
     label: string;
     href: string;
+};
+export declare const OPERATIONAL_SECTION_IDS: readonly ["home", "crm", "social", "replies", "mail", "settings"];
+export type CreateSectionsOptions = {
+    visibleSections?: readonly SectionId[];
 };
 export declare const ALL_BUSINESSES = "all";
 export declare const NO_BUSINESS = "none";
@@ -38,7 +42,7 @@ export type BusinessCatalog = {
     groups?: readonly BusinessGroupOption[];
 };
 export type BusinessSelectionState = "all" | "business" | "legacy-union" | "invalid" | "unavailable";
-export declare function createSections(links: KatalisLinks, businessId?: string): KatalisSection[];
+export declare function createSections(links: KatalisLinks, businessId?: string, options?: CreateSectionsOptions): KatalisSection[];
 /**
  * Fallback for consumers that do not provide a catalog yet. Business identity
  * lives in the CRM; nothing new should depend on these ids.

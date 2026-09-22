@@ -137,6 +137,31 @@
 
 @media (min-width: 1600px) { .katalis-shell__shortcut-label { display: inline; } }
 
+@media (min-width: 900px) {
+  .katalis-shell {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--katalis-shell-height);
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199.98px) {
+  .katalis-shell__nav {
+    order: 3;
+    flex: 1 0 100%;
+    height: auto;
+    min-width: 0;
+    min-height: 44px;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .katalis-shell__nav { min-height: var(--katalis-shell-height); }
+}
+
 @media (max-width: 899.98px) {
   .katalis-shell__nav { display: none; }
   .katalis-shell__disclosure--sections { display: block; }

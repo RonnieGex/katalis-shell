@@ -113,7 +113,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
               </optgroup>
             ))}
         </select>
-        {contactsHref && <a className="katalis-shell__shortcut" href={contactsHref} aria-label="Contactos de OpenReply" title="Contactos de OpenReply"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3" /></svg><span className="katalis-shell__shortcut-label">Contactos de OpenReply</span></a>}
+        {contactsHref && <a className="katalis-shell__shortcut" href={contactsHref} aria-label="Contactos de Instagram" title="Contactos de Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v3" /></svg><span className="katalis-shell__shortcut-label">Contactos de Instagram</span></a>}
         {user ? <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>
           <p className="katalis-shell__name">{user.name}</p>
           <p className="katalis-shell__email">{user.email}</p>

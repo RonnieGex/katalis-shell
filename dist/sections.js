@@ -19,12 +19,6 @@ export const ALL_BUSINESSES = "all";
 export const NO_BUSINESS = "none";
 export const LEGACY_ORBITA = "orbita";
 export const RESERVED_BUSINESS_IDS = [ALL_BUSINESSES, NO_BUSINESS];
-/**
- * Fija el negocio en un destino con URL y URLSearchParams. `set` deja una sola
- * ocurrencia y conserva los demás parámetros y el fragmento. Una entrada vacía
- * no sustituye el negocio que el destino ya llevaba; `all` viaja explícito,
- * porque quien lee consulta el almacenamiento local cuando falta el parámetro.
- */
 function setBusiness(url, businessId) {
     if (!businessId)
         return;

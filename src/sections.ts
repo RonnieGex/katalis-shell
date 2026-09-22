@@ -56,12 +56,6 @@ export type BusinessCatalog = {
 
 export type BusinessSelectionState = "all" | "business" | "legacy-union" | "invalid" | "unavailable";
 
-/**
- * Fija el negocio en un destino con URL y URLSearchParams. `set` deja una sola
- * ocurrencia y conserva los demás parámetros y el fragmento. Una entrada vacía
- * no sustituye el negocio que el destino ya llevaba; `all` viaja explícito,
- * porque quien lee consulta el almacenamiento local cuando falta el parámetro.
- */
 function setBusiness(url: URL, businessId?: string): void {
   if (!businessId) return;
   url.searchParams.set("negocio", businessId);

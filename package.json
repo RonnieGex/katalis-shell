@@ -1,6 +1,6 @@
 {
   "name": "@katalis/shell",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Barra de navegación compartida de la suite Katalis",
   "type": "module",
   "main": "./dist/index.js",
@@ -25,7 +25,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc --noEmit && tsc --noEmit -p tsconfig.examples.json",
+    "preview:build": "bun build examples/preview.tsx --outdir examples/dist --target browser",
+    "preview:serve": "bun examples/serve.ts 4310 localhost",
+    "preview:serve-b": "bun examples/serve.ts 4311 127.0.0.1",
     "test": "bun test"
   },
   "peerDependencies": {
@@ -40,6 +43,7 @@
   "devDependencies": {
     "@katalis/ui-tokens": "github:RonnieGex/katalis-ui-tokens#v0.1.0",
     "@types/react": "^19.2.0",
+    "@types/react-dom": "^19",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "typescript": "5.9.2"

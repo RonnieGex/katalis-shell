@@ -1,18 +1,35 @@
 export const SECTION_LABELS = {
     home: "Inicio",
     crm: "CRM",
-    social: "Social",
-    replies: "Respuestas IG",
+    social: "Redes sociales",
+    replies: "Respuestas Instagram",
     mail: "Correo",
     ads: "Ads",
     settings: "Configuración",
 };
+export const OPERATIONAL_SECTION_IDS = [
+    "home",
+    "crm",
+    "social",
+    "replies",
+    "mail",
+    "settings",
+];
 export const ALL_BUSINESSES = "all";
 export const NO_BUSINESS = "none";
 export const LEGACY_ORBITA = "orbita";
 export const RESERVED_BUSINESS_IDS = [ALL_BUSINESSES, NO_BUSINESS];
-export function createSections(links, businessId) {
-    return Object.keys(SECTION_LABELS).map((id) => {
+function setBusiness(url, businessId) {
+    if (!businessId)
+        return;
+    url.searchParams.set("negocio", businessId);
+}
+export function createSections(links, businessId, options) {
+    const canonical = Object.keys(SECTION_LABELS);
+    const visible = options?.visibleSections
+        ? canonical.filter((id) => options.visibleSections?.includes(id))
+        : canonical;
+    return visible.map((id) => {
         const href = links[id];
         if (href === "#")
             return { id, label: SECTION_LABELS[id], href };
@@ -20,8 +37,7 @@ export function createSections(links, businessId) {
         if (url.protocol !== "https:" && url.protocol !== "http:") {
             throw new Error(`El enlace de ${SECTION_LABELS[id]} debe usar HTTP o HTTPS.`);
         }
-        if (businessId && businessId !== ALL_BUSINESSES)
-            url.searchParams.set("negocio", businessId);
+        setBusiness(url, businessId);
         return { id, label: SECTION_LABELS[id], href: url.href };
     });
 }
@@ -59,8 +75,7 @@ export function openReplyContactsHref(crmWorkspaceUrl, businessId) {
         throw new Error("El CRM debe usar HTTP o HTTPS.");
     url.pathname = `${url.pathname.replace(/\/$/, "")}/contacts`;
     url.searchParams.set("source", "OPENREPLY");
-    if (businessId && businessId !== ALL_BUSINESSES)
-        url.searchParams.set("negocio", businessId);
+    setBusiness(url, businessId);
     return url.href;
 }
 export function businessSelectionValue(raw, catalog) {

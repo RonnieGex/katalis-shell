@@ -78,6 +78,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
     [],
   );
   async function signOut() {
+    if (signingOut) return;
     setSigningOut(true);
     setError("");
     try {
@@ -117,7 +118,7 @@ export function KatalisShell({ sections, current, business, user, signInHref, si
         {user ? <Disclosure variant="account" label={<span aria-label={`Cuenta de ${user.name}`} className="katalis-shell__avatar">{user.avatarUrl ? <img src={user.avatarUrl} alt="" width={32} height={32} /> : initials}</span>}>
           <p className="katalis-shell__name">{user.name}</p>
           <p className="katalis-shell__email">{user.email}</p>
-          <button className="katalis-shell__logout" type="button" disabled={signingOut} onClick={signOut}>{signingOut ? "Cerrando sesión…" : "Salir"}</button>
+          <button className="katalis-shell__logout" type="button" aria-disabled={signingOut} onClick={signOut}>{signingOut ? "Cerrando sesión…" : "Salir"}</button>
           <p className="katalis-shell__error" role="status">{error}</p>
         </Disclosure> : signInHref ? <a className="katalis-shell__sign-in" href={signInHref}>Entrar</a> : null}
       </div>

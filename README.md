@@ -1,15 +1,15 @@
 # @katalis/shell
 
 Barra común de Katalis para React 19. No depende de Next.js, Tailwind ni un router.
-El CSS consume `@katalis/ui-tokens` v0.1.0. La barra mide 56 px, conserva esquinas rectas y usa Lufga.
+El CSS consume `@katalis/ui-tokens` v0.1.0. La barra usa Lufga, conserva esquinas rectas y adapta su altura. No restes una altura fija al contenido.
 Instala los tokens explícitamente en cada aplicación; son una dependencia par, igual que React.
 
 ```tsx
-import { KatalisShell, createSections, OPERATIONAL_SECTION_IDS, useKatalisBusiness } from '@katalis/shell';
+import { KatalisShell, createSections, OPERATIONAL_SECTION_IDS, useKatalisBusinessContext } from '@katalis/shell';
 import '@katalis/shell/styles.css';
 
 function Navigation({ links, user }) {
-  const business = useKatalisBusiness();
+  const business = useKatalisBusinessContext();
   return (
     <KatalisShell
       sections={createSections(links, business.value, { visibleSections: OPERATIONAL_SECTION_IDS })}
@@ -30,6 +30,8 @@ function Navigation({ links, user }) {
 | `signInHref` | Enlace de acceso cuando `user` está ausente. El hub usa el acceso del CRM. |
 | `contactsHref` | Acceso directo «Contactos de Instagram»; icono con nombre accesible y texto desde 1600 px. |
 | `contentId` | ID del contenido para el enlace accesible. Predeterminado: `katalis-content`. |
+
+El ejemplo Navigation debe estar dentro de KatalisBusinessProvider con el catálogo explícito del CRM. El hook de contexto consume ese catálogo; llamar al hook independiente sin catálogo puede recuperar el fallback de desarrollo.
 
 `links` es un objeto con los siete IDs y enlaces HTTP/HTTPS absolutos.
 `createSections(links, businessId, options)` acepta un tercer argumento opcional.

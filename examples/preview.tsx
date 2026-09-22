@@ -5,7 +5,7 @@ import {
   KatalisShell,
   openReplyContactsHref,
   OPERATIONAL_SECTION_IDS,
-  useKatalisBusiness,
+  useKatalisBusinessContext,
   type BusinessCatalog,
   type KatalisLinks,
 } from '../dist/index.js';
@@ -47,7 +47,7 @@ const shortUser = {
 };
 
 function Operational() {
-  const business = useKatalisBusiness();
+  const business = useKatalisBusinessContext();
   return (
     <KatalisShell
       sections={createSections(links, business.value, { visibleSections: OPERATIONAL_SECTION_IDS })}
@@ -62,7 +62,7 @@ function Operational() {
 }
 
 function Compatibility() {
-  const business = useKatalisBusiness();
+  const business = useKatalisBusinessContext();
   return (
     <KatalisShell
       sections={createSections(links, business.value)}
